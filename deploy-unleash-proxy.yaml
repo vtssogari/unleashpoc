@@ -20,7 +20,17 @@ spec:
     app: uleash-proxy
 
 ---
-
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: unleash-proxy-cm
+data:
+  UNLEASH_API_TOKEN: $UNLEASH_API_TOKEN
+  UNLEASH_URL: $UNLEASH_URL
+  UNLEASH_PROJECT_NAME: $UNLEASH_PROJECT_NAME
+  UNLEASH_PROXY_CLIENT_KEYS: $UNLEASH_PROXY_CLIENT_KEYS
+  UNLEASH_ENVIRONMENT: $UNLEASH_ENVIRONMENT
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -44,12 +54,27 @@ spec:
             - containerPort: 3000
           env:
             - name: UNLEASH_API_TOKEN
-              value: [Your_token_key]
+              valueFrom:
+                configMapKeyRef:
+                  name: unleash-proxy-cm
+                  key: UNLEASH_API_TOKEN
             - name: UNLEASH_URL
-              value: [uleash_url]
+              valueFrom:
+                configMapKeyRef:
+                  name: unleash-proxy-cm
+                  key: UNLEASH_URL
             - name: UNLEASH_PROJECT_NAME
-              value: [project_name]
+              valueFrom:
+                configMapKeyRef:
+                  name: unleash-proxy-cm
+                  key: UNLEASH_PROJECT_NAME
             - name: UNLEASH_PROXY_CLIENT_KEYS
-              value: [your client]
+              valueFrom:
+                configMapKeyRef:
+                  name: unleash-proxy-cm
+                  key: UNLEASH_PROXY_CLIENT_KEYS
             - name: UNLEASH_ENVIRONMENT
-              value: deployment
+              valueFrom:
+                configMapKeyRef:
+                  name: unleash-proxy-cm
+                  key: UNLEASH_ENVIRONMENT
